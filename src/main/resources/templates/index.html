@@ -20,15 +20,13 @@
             <form action="/index" method="post">
                 <div class="container-fluid">
                     <div class="row badge-secondary rounded p-1">
-                        <div class="col-sm-1 text-center mt-1">Search:</div>
-                        <div class="col-sm-2 text-center">
-                            <input type="hidden" th:value="${net}" name="fnet"/>
-                            <!--<input type="text" name="ipNet" th:value="${ipNet}" placeholder="192.168.1.0"-->
-                                   <!--style="width:inherit; text-align: center"/>-->
+                        <div class="col-sm-1 text-center mt-1">
+                            <!--<a href="/">Edit subnet</a>-->
+                            <!--<a th:href="@{/edit/(subnet=${ip.getIp()})}">Edit subnet</a>-->
                         </div>
-                        <!--<div class="col-sm-1 text-center">-->
-                            <!--<input type="text" name="fVlan" th:value="${fVlan}" placeholder="1"-->
-                                   <!--style="width:inherit; text-align: center"/></div>-->
+                        <div class="col-sm-2 text-center mt-1">Search:
+                            <input type="hidden" th:value="${net}" name="fnet"/>
+                        </div>
                         <div class="col-sm-3 text-center">
                             <input type="text" name="fType" th:value="${fType}" placeholder="DeviceType"
                                    style="width:inherit; text-align: center"/></div>
@@ -42,19 +40,15 @@
                             <input type="submit"/></div>
                     </div>
                     <div class="row rounded" style="background-color: #dddddd">
-                        <!--<div class="col-sm-1 text-center border border-dark">Mask</div>-->
                         <div class="col-sm-3 text-center border border-dark">Ip</div>
-                        <!--<div class="col-sm-1 text-center border border-dark">Vlan</div>-->
                         <div class="col-sm-3 text-center border border-dark">DeviceType</div>
                         <div class="col-sm-2 text-center border border-dark">DeviceId</div>
                         <div class="col-sm-4 text-center border border-dark">Description</div>
                     </div>
                     <div class="row border border-secondary rounded" th:each="ip:${ipList}">
-                        <!--<div class="col-sm-1 text-center" th:text="${ip.net.getMask()}">Mask</div>-->
                         <div class="col-sm-3 text-center">
                             <a th:href="@{/ip/(ip=${ip.getIp()})}" th:text="${ip.getIpFromBinaryIp()}">Ip</a>
                         </div>
-                        <!--<div class="col-sm-1 text-center" th:text="${ip.net.vlan}">Vlan</div>-->
                         <div class="col-sm-3" th:text="${ip.getDeviceType()}">DeviceType</div>
                         <div class="col-sm-2 text-center" th:text="${ip.getDeviceId()}">DeviceId</div>
                         <div class="col-sm-4" th:text="${ip.getDescription()}">Description</div>
@@ -63,7 +57,6 @@
                 <nav>
                     <ul class="pagination m-2 pl-3">
                         <li th:each="p : ${#numbers.sequence( 1, pages)}">
-                            <!--<a th:text="${p}" th:href="@{'index?page='+${p}}" class="m-2"></a>-->
                             <input type="submit" name="page" th:value="${p}" th:class="${p}==${page}?'badge-secondary m-1 rounded':'m-1 rounded'" style="width: 30px"/>
                         </li>
                     </ul>

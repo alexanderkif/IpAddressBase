@@ -1,0 +1,52 @@
+<!DOCTYPE HTML>
+<html xmlns:th="http://www.thymeleaf.org"
+      lang="en">
+
+<head>
+    <div th:replace="fragments :: header-css"/>
+</head>
+
+<body>
+
+<div class="container-fluid">
+
+    <div th:replace="fragments :: header-top"/>
+
+    <div class="row mt-3">
+
+        <div th:replace="fragments :: left-menu"/>
+
+        <div class="col-sm-10">
+            <form action="/index" method="post">
+                <div class="container-fluid">
+                    <div class="row rounded" style="background-color: #dddddd">
+                        <div class="col-sm-3 text-center border border-dark">Subnet</div>
+                        <div class="col-sm-1 text-center border border-dark">Mask</div>
+                        <div class="col-sm-1 text-center border border-dark">Vlan</div>
+                        <div class="col-sm-2 text-center border border-dark">VlanName</div>
+                        <div class="col-sm-2 text-center border border-dark">Owner</div>
+                        <div class="col-sm-3 text-center border border-dark">Description</div>
+                    </div>
+                    <div class="row border border-secondary rounded" th:each="subnet:${subnets}">
+                        <div class="col-sm-3 text-center">
+                            <a th:href="@{/index/(net=${subnet.subnet},mask=${subnet.mask})}" th:text="${subnet.getIpFromBinaryIp()}">Net</a>
+                        </div>
+                        <div class="col-sm-1 text-center" th:text="${subnet.mask}">Mask</div>
+                        <div class="col-sm-1 text-center" th:text="${subnet.vlan}">Vlan</div>
+                        <div class="col-sm-2 text-center" th:text="${subnet.getVlanName()}">VlanName</div>
+                        <div class="col-sm-2 text-center" th:text="${subnet.owner}">Owner</div>
+                        <!--<div class="col-sm-4 text-center" th:text="${net.getDeviceId()}">DeviceId</div>-->
+                        <div class="col-sm-3" th:text="${subnet.getDescription()}">Description</div>
+                    </div>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <div th:replace="fragments :: footer"/>
+
+</div>
+
+</body>
+
+</html>

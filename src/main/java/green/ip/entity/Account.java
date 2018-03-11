@@ -7,18 +7,18 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-
-@Document(collection="nets")
+@Document(collection = "Accounts")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Net {
+public class Account {
 
+//    private String id;
     @Id
-    private String id;
-    private String net;
-    private String owner;
-    private String description;
+    private String email;
+    private String password;
+    private String phone;
+    private boolean enabled;
 
 }

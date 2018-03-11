@@ -4,18 +4,30 @@ import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
 import com.mongodb.client.MongoDatabase;
+import green.ip.entity.Account;
 import green.ip.entity.Ip;
 import green.ip.entity.Net;
+import green.ip.entity.SubNet;
+import green.ip.services.AccountRepository;
+import green.ip.services.MyUserDetailsService;
 import green.ip.services.NetRepository;
+import green.ip.services.SubNetRepository;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.web.ServerProperties;
+import org.springframework.context.annotation.Scope;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import green.ip.services.IpRepository;
+import sun.plugin.liveconnect.SecurityContextHelper;
 
 import javax.websocket.server.PathParam;
+import java.security.Principal;
+import java.security.Security;
 import java.util.*;
 
 import static com.mongodb.client.model.Filters.*;
@@ -23,17 +35,23 @@ import static org.codehaus.groovy.runtime.InvokerHelper.asList;
 
 
 @Controller
+@Scope("session")
 public class IndexController {
 
     @Autowired
-    private IpRepository ipRepository;
+    private AccountRepository accountRepository;
+    @Autowired
+    private PasswordEncoder encoder;
     @Autowired
     private NetRepository netRepository;
+    @Autowired
+    private SubNetRepository subNetRepository;
+
+    private String suffix;
 
     private MongoClient mongoClient = new MongoClient("localhost", 27017);
     MongoDatabase mongoDatabase = mongoClient.getDatabase("ipbase");
-    MongoCollection ips = mongoDatabase.getCollection("ips");
-//    MongoCollection nets = mongoDatabase.getCollection("nets");
+    MongoCollection ips;
     private int docsOnPage = 50;
 
     @RequestMapping(value = "/")
@@ -41,6 +59,17 @@ public class IndexController {
         model.addAttribute("nets", netRepository.findAll());
         model.addAttribute("title", "home");
         return "home";
+    }
+
+    @RequestMapping(value = "/subnets")
+    public String net(Model model,
+                      @PathParam("id") String id) {
+        this.suffix = netRepository.getById(id).getId();
+        ips = mongoDatabase.getCollection("ips"+this.suffix);
+        model.addAttribute("suffix", suffix);
+        model.addAttribute("subnets", subNetRepository.getByNet(suffix));
+        model.addAttribute("title", "subnets");
+        return "subnets";
     }
 
     @RequestMapping(value = "/index")
@@ -51,21 +80,13 @@ public class IndexController {
                         @ModelAttribute("fDevId") String fDevId,
                         @ModelAttribute("fDescr") String fDescr,
                         @ModelAttribute("fnet") String fnet,
-                        @PathParam("net") String net,
-                        @PathParam("mask") String mask) {
+                        @PathParam("net") String net) {
 
         if (page.equals("")) page = "1";
         Integer pageNumber = Integer.parseInt(page);
         List<Ip> ipList = new ArrayList<>();
         Bson query = new BasicDBObject();
         if (!fnet.equals("")) net = fnet;
-//        if (!ipNet.equals("")) {
-//            String ipNetBinary = Arrays.stream(ipNet.split("\\."))
-//                    .mapToInt(Integer::parseInt)
-//                    .mapToObj(Integer::toBinaryString)
-//                    .reduce("", String::concat);
-//            query = regex("_id", ipNetBinary);
-//        }
         if (!fVlan.equals("")) query = and(query, eq("vlan", fVlan));
         if (!fType.equals("")) query = and(query, regex("deviceType", fType, "i"));
         if (!fDevId.equals("")) query = and(query, regex("deviceId", fDevId, "i"));
@@ -85,20 +106,27 @@ public class IndexController {
         model.addAttribute("page", page);
         model.addAttribute("ipList", ipList);
         model.addAttribute("net", net);
+        model.addAttribute("suffix", suffix);
         model.addAttribute("title", "index");
         return "index";
     }
 
-    @RequestMapping(value = "/add", method = RequestMethod.GET)
-    public String add(Model model) {
-        model.addAttribute("title", "add");
-        return "add";
+    @RequestMapping(value = "/addnet", method = RequestMethod.GET)
+    public String addnet(Model model) {
+        model.addAttribute("title", "addnet");
+        return "addnet";
+    }
+
+    @RequestMapping(value = "/addsubnet", method = RequestMethod.GET)
+    public String addsubnet(Model model) {
+        model.addAttribute("title", "addsubnet");
+        return "addsubnet";
     }
 
     @RequestMapping(value = "/ip/", method = RequestMethod.GET)
     public String ip(Model model, @PathParam("ip") String ip) {
-        Ip result = ipRepository.getByIp(ip);
-        Net net = netRepository.getByNet(result.getNet());
+        Ip result = toIp((Document) ips.find(new Document("_id", ip)).first());
+        SubNet net = subNetRepository.getBySubnet(result.getSubnet());
         model.addAttribute("mask", net.getMask());
         model.addAttribute("vlan", net.getVlan());
         model.addAttribute("ip", result);
@@ -107,18 +135,15 @@ public class IndexController {
     }
 
     @RequestMapping(value = "/ip/", method = RequestMethod.POST)
-    public String ipsave(Model model, @PathParam("ip") String ip,
+    public String ipsave(Model model, Principal principal,
+                         @PathParam("ip") String ip,
                          @ModelAttribute("vlan") String vlan,
                          @ModelAttribute("deviceType") String deviceType,
                          @ModelAttribute("deviceId") String deviceId,
                          @ModelAttribute("description") String description) {
-        Ip result = ipRepository.getByIp(ip);
+        Ip result = toIp((Document) ips.find(new Document("_id", ip)).first());
         String reason = "changed:";
         Boolean letsChange = false;
-//        if (!result.getVlan().equals(vlan)) {
-//            reason += " VLAN " + result.getVlan() + " to " + vlan;
-//            letsChange = true;
-//        }
         if (!result.getDeviceType().equals(deviceType)) {
             reason += " TYPE " + result.getDeviceType() + " to " + deviceType;
             letsChange = true;
@@ -132,23 +157,40 @@ public class IndexController {
             letsChange = true;
         }
         if (letsChange) {
-//            result.setVlan(vlan);
             result.setDeviceType(deviceType);
             result.setDeviceId(deviceId);
             result.setDescription(description);
             result.getHistory().add(new Document("data", Calendar.getInstance().getTime())
                     .append("reason", reason)
-                    .append("user", "User1")
+                    .append("user", principal.getName())
             );
-            ipRepository.save(result);
+            ips.replaceOne(eq("_id", ip), toBson(result));
         }
         model.addAttribute("ip", result);
         model.addAttribute("title", ip);
         return "card";
     }
 
-    @RequestMapping(value = "/create", method = RequestMethod.POST)
-    public String create(Model model, @ModelAttribute("ipNet") String ipNet,
+    @RequestMapping(value = "/createnet", method = RequestMethod.POST)
+    public String createnet(Model model, @ModelAttribute("netName") String netName,
+                               @ModelAttribute("owner") String owner,
+                               @ModelAttribute("description") String description) {
+        if (netName.equals("")){
+            model.addAttribute("msg", "Net name can not be empty");
+            return "addnet";
+        }
+        Net net = Net.builder()
+                .net(netName)
+                .owner(owner)
+                .description(description)
+                .build();
+        netRepository.save(net);
+        return "redirect:/";
+    }
+
+    @RequestMapping(value = "/createsubnet", method = RequestMethod.POST)
+    public String createsubnet(Model model, Principal principal,
+                         @ModelAttribute("ipNet") String ipNet,
                          @ModelAttribute("mask") String mask,
                          @ModelAttribute("vlan") String vlan,
                          @ModelAttribute("owner") String owner,
@@ -201,32 +243,33 @@ public class IndexController {
 
         iBinary = String.format(strFormat, Integer.toBinaryString(0)).replace(' ', '0');
         iBinaryFull = ipBinaryFull.substring(0, Integer.parseInt(mask)) + iBinary;
-        Net net = Net.builder()
-                .net(iBinaryFull)
+        SubNet subNet = SubNet.builder()
+                .subnet(iBinaryFull)
                 .mask(mask)
+                .net(suffix)
                 .vlan(vlan)
                 .vlanName(vlanName)
                 .owner(owner)
                 .description(description)
                 .build();
-        netRepository.save(net);
+        subNetRepository.save(subNet);
 
         for (int i = 1; i < ipWML; i++) {
             iBinary = String.format(strFormat, Integer.toBinaryString(i)).replace(' ', '0');
             iBinaryFull = ipBinaryFull.substring(0, Integer.parseInt(mask)) + iBinary;
             Ip ip = Ip.builder()
                     .ip(iBinaryFull)
-                    .net(net.getNet())
+                    .subnet(subNet.getSubnet())
                     .deviceId("")
                     .deviceType("")
                     .description("")
                     .history(asList(new Document("data", Calendar.getInstance().getTime())
                             .append("reason", "create")
-                            .append("user", "User1")
+                            .append("user", principal.getName())
                     ))
                     .build();
-            if (ipRepository.getByIp(ip.getIp()) == null) {
-                ipRepository.save(ip);
+            if (ips.find(new Document("_id", ip.getIp())).first() == null) {
+                ips.insertOne(toBson(ip));
             } else {
                 ipList.add(ip);
             }
@@ -247,20 +290,14 @@ public class IndexController {
         return binaryIp;
     }
 
-    public Ip toIp(org.bson.Document document) {
+    public Ip toIp(Document document) {
         Ip ip = new Ip();
         if (document.get("_id") != null) {
             ip.setIp((String) document.get("_id"));
         }
-//        if (document.get("vlan") != null) {
-//            ip.setVlan((String) document.get("vlan"));
-//        }
-//        if (document.get("vlanName") != null) {
-//            ip.setVlanName((String) document.get("vlanName"));
-//        }
-//        if (document.get("mask") != null) {
-//            ip.setMask((String) document.get("mask"));
-//        }
+        if (document.get("net") != null) {
+            ip.setSubnet((String) document.get("net"));
+        }
         if (document.get("gate") != null) {
             ip.setGate((String) document.get("gate"));
         }
@@ -287,5 +324,86 @@ public class IndexController {
                     ) document.get("history"));
         }
         return ip;
+    }
+
+    public Document toBson(Ip ip) {
+        Document doc = new Document("_id", ip.getIp());
+        if (ip.getSubnet() != null) {
+            doc.append("net", ip.getSubnet());
+        }
+        if (ip.getGate() != null) {
+            doc.append("gate", ip.getGate());
+        }
+        if (ip.getDeviceType() != null) {
+            doc.append("deviceType",ip.getDeviceType());
+        }
+        if (ip.getDeviceId() != null) {
+            doc.append("deviceId",ip.getDeviceId());
+        }
+        if (ip.getDns() != null) {
+            doc.append("dns",ip.getDns());
+        }
+        if (ip.getMac() != null) {
+            doc.append("mac",ip.getMac());
+        }
+        if (ip.getCable() != null) {
+            doc.append("cable",ip.getCable());
+        }
+        if (ip.getDescription() != null) {
+            doc.append("description",ip.getDescription());
+        }
+        if (ip.getHistory() != null) {
+            doc.append("history", ip.getHistory());
+        }
+        return doc;
+    }
+
+
+    @RequestMapping("/login")
+    public String login(Model model) {
+        model.addAttribute("links", "login");
+        model.addAttribute("titl", "Login");
+        return "login";
+    }
+
+    @RequestMapping("/register")
+    public String register(Model model, Principal principal) {
+        String phone = "";
+        try{
+            Account account = accountRepository.findByEmail(principal.getName());
+            phone = account.getPhone();
+        }catch(Exception e){
+            System.out.println("No user in repository "+e);
+        }
+        model.addAttribute("links", "register");
+        model.addAttribute("titl", "Register");
+        model.addAttribute("phone", phone);
+        return "register";
+    }
+
+    @RequestMapping("/adduser")
+    public String adduser(Model model, @ModelAttribute("username") String email,
+                          @ModelAttribute("password") String password,
+                          @ModelAttribute("phone") String phone,
+                          @ModelAttribute("existing") String existing) {
+        String li, titl;
+        if ((accountRepository.findByEmail(email) == null || existing.equals("true"))
+                && !Objects.equals(email, "") && !Objects.equals(password, "")) {
+            accountRepository.save(Account.builder()
+                    .email(email)
+                    .phone(phone)
+                    .password(encoder.encode(password))
+                    .enabled(true)
+                    .build()
+            );
+            li = "login";
+            titl = "Added";
+        } else {
+            li = "login";
+            titl = "Not added";
+        }
+        model.addAttribute("links", li);
+        model.addAttribute("titl", titl);
+        return "login";
     }
 }

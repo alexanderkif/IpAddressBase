@@ -5,21 +5,19 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 
 import java.util.List;
 
-@Document(collection="ips")
 @Data
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class Ip {
+public class Ip extends org.bson.Document{
 
     @Id
     private String ip;
-    private String net;
+    private String subnet;
     private String deviceType;
     private String deviceId;
     private String dns;

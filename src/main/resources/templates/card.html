@@ -20,7 +20,7 @@
 
         <div class="col-sm-10">
             <form th:action="@{/ip/(ip=${ip.getIp()})}" method="post">
-                <div class="container border border-secondary rounded" style="background-color: #dddddd">
+                <div class="container-fluid border border-secondary rounded" style="background-color: #dddddd">
                     <div class="row m-3">
                         <div class="col-sm-12 text-center">
                             <h2>Ip : <span th:text="${ip.getIpFromBinaryIp()}"></span></h2>
@@ -45,13 +45,13 @@
                             DeviceType
                         </div>
                         <div class="col-sm-4">
-                            <input type="text" name="deviceType" th:value="${ip.getDeviceType()}"/>
+                            <input type="text" name="deviceType" th:value="${ip.getDeviceType()}" class="rounded"/>
                         </div>
                         <div class="col-sm-2 text-right mt-1">
                             DeviceId
                         </div>
                         <div class="col-sm-4">
-                            <input type="text" name="deviceId" th:value="${ip.getDeviceId()}"/>
+                            <input type="text" name="deviceId" th:value="${ip.getDeviceId()}" class="rounded"/>
                         </div>
                     </div>
                     <div class="row m-3">
@@ -59,35 +59,34 @@
                             Description
                         </div>
                         <div class="col-sm-10">
-                            <input type="text" name="description" th:value="${ip.getDescription()}"/>
+                            <input type="text" name="description" th:value="${ip.getDescription()}" class="rounded"/>
                         </div>
                     </div>
                     <div class="row m-3">
                         <div class="col-sm-12 text-center">
-                            <input type="submit" th:value="Save"/>
+                            <input type="submit" th:value="Save" class="rounded"/>
                         </div>
                     </div>
                     <div class="row m-3">
                         <div class="col-sm-12 text-center">
-                            <a th:href="@{/index/(net=${ip.getNet()},mask=${mask})}">back to the list</a>
+                            <a th:href="@{/index/(net=${ip.getSubnet()},mask=${mask})}">back to the list</a>
                         </div>
                     </div>
                     <div class="row m-3">
                         <div class="col-sm-12"><h5>History :</h5></div>
                     </div>
-                    <div class="row m-1 border border-dark" th:each="item : ${ip.getHistory()}">
+                    <div class="row m-1 border border-secondary rounded" th:each="item : ${ip.getHistory()}">
                         <div class="col-sm-3" colspan="2" th:text="${item.data}">...</div>
                         <div class="col-sm-6" th:text="${item.reason}">...</div>
                         <div class="col-sm-3" th:text="${item.user}">...</div>
-                        <!--<span th:text="${ip.getHistory()}"></span>-->
                     </div>
                 </div>
             </form>
         </div>
     </div>
+    <div th:replace="fragments :: footer"/>
 </div>
 
-<div th:replace="fragments :: footer"/>
 
 </body>
 

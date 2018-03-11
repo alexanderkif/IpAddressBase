@@ -19,54 +19,19 @@
         <div class="col-sm-10">
             <form action="/index" method="post">
                 <div class="container-fluid">
-                    <!--<div class="row badge-secondary rounded p-1">-->
-                        <!--<div class="col-sm-1 text-center mt-1">Search:</div>-->
-                        <!--<div class="col-sm-2 text-center">-->
-                            <!--<input type="text" name="ipNet" th:value="${ipNet}" placeholder="192.168.1.0"-->
-                                   <!--style="width:inherit; text-align: center"/></div>-->
-                        <!--<div class="col-sm-1 text-center">-->
-                            <!--<input type="text" name="fVlan" th:value="${fVlan}" placeholder="1"-->
-                                   <!--style="width:inherit; text-align: center"/></div>-->
-                        <!--<div class="col-sm-2 text-center">-->
-                            <!--<input type="text" name="fType" th:value="${fType}" placeholder="DeviceType"-->
-                                   <!--style="width:inherit; text-align: center"/></div>-->
-                        <!--<div class="col-sm-2 text-center">-->
-                            <!--<input type="text" name="fDevId" th:value="${fDevId}" placeholder="DeviceId"-->
-                                   <!--style="width:inherit; text-align: center"/></div>-->
-                        <!--<div class="col-sm-2 text-center">-->
-                            <!--<input type="text" name="fDescr" th:value="${fDescr}" placeholder="Description"-->
-                                   <!--style="width:inherit"/></div>-->
-                        <!--<div class="col-sm-2 text-center">-->
-                            <!--<input type="submit"/></div>-->
-                    <!--</div>-->
                     <div class="row rounded" style="background-color: #dddddd">
                         <div class="col-sm-3 text-center border border-dark">Net</div>
-                        <div class="col-sm-1 text-center border border-dark">Mask</div>
-                        <div class="col-sm-1 text-center border border-dark">Vlan</div>
-                        <div class="col-sm-2 text-center border border-dark">VlanName</div>
-                        <div class="col-sm-2 text-center border border-dark">Owner</div>
-                        <div class="col-sm-3 text-center border border-dark">Description</div>
+                        <div class="col-sm-3 text-center border border-dark">Owner</div>
+                        <div class="col-sm-6 text-center border border-dark">Description</div>
                     </div>
                     <div class="row border border-secondary rounded" th:each="net:${nets}">
                         <div class="col-sm-3 text-center">
-                            <a th:href="@{/index/(net=${net.net},mask=${net.mask})}" th:text="${net.getIpFromBinaryIp()}">Net</a>
+                            <a th:href="@{/subnets/(id=${net.id})}" th:text="${net.net}">Net</a>
                         </div>
-                        <div class="col-sm-1 text-center" th:text="${net.mask}">Mask</div>
-                        <div class="col-sm-1 text-center" th:text="${net.vlan}">Vlan</div>
-                        <div class="col-sm-2 text-center" th:text="${net.getVlanName()}">VlanName</div>
-                        <div class="col-sm-2 text-center" th:text="${net.owner}">Owner</div>
-                        <!--<div class="col-sm-4 text-center" th:text="${net.getDeviceId()}">DeviceId</div>-->
-                        <div class="col-sm-3" th:text="${net.getDescription()}">Description</div>
+                        <div class="col-sm-3 text-center" th:text="${net.owner}">Owner</div>
+                        <div class="col-sm-6" th:text="${net.getDescription()}">Description</div>
                     </div>
                 </div>
-                <!--<nav>-->
-                    <!--<ul class="pagination m-2 pl-3">-->
-                        <!--<li th:each="p : ${#numbers.sequence( 1, pages)}">-->
-                            <!--&lt;!&ndash;<a th:text="${p}" th:href="@{'index?page='+${p}}" class="m-2"></a>&ndash;&gt;-->
-                            <!--<input type="submit" name="page" th:value="${p}" th:class="${p}==${page}?'badge-secondary m-1 rounded':'m-1 rounded'" style="width: 30px"/>-->
-                        <!--</li>-->
-                    <!--</ul>-->
-                <!--</nav>-->
             </form>
         </div>
     </div>
