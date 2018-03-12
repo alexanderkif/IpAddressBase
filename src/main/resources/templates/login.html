@@ -17,11 +17,11 @@
         <div th:replace="fragments :: left-menu"/>
 
         <div class="col-sm-10" th:if="(${titl}!='Added')and(${titl}!='Not added')">
-            <div class="container-fluid border border-secondary rounded" style="background-color: #dddddd">
-                <div class="alert alert-warning-orange pl-5 pr-5 mt-3 border border-secondary">
+            <div class="container-fluid border border-info rounded">
+                <div class="alert alert-info pl-5 pr-5 mt-3 border border-info">
                     <h2>Enter your name and password</h2>
                 </div>
-                <div class="alert alert-light p-3 rounded mt-3 border border-secondary">
+                <div class="alert alert-info p-3 rounded mt-3 border border-info">
                     <form action="#" th:action="@{/login}" method="POST" name="model">
                         <div class="form-group row">
                             <div for="username"
@@ -44,7 +44,7 @@
                         </div>
                         <div class="form-group row">
                             <div class="col-sm-offset-1 col-sm-6">
-                                <input type="submit" class="btn btn-secondary" value="Sign in"/>
+                                <input type="submit" class="btn btn-info" value="Sign in"/>
                             </div>
                         </div>
                         <div class="form-group row">
@@ -58,16 +58,16 @@
         </div>
 
         <div class="col-sm-10" th:if="${titl}=='Added'">
-            <div class="container-fluid border border-secondary rounded" style="background-color: #dddddd">
+            <div class="container-fluid border border-info rounded" style="background-color: #dddddd">
                 <div class="container fo">
                     <br/>
-                    <div class="alert alert-warning-orange pl-5 pr-5 border border-secondary mb-3">
+                    <div class="alert alert-warning-orange pl-5 pr-5 border border-info mb-3">
                         <h1 class="col-sm-7 col-form-label lefted">User was added</h1>
                     </div>
                     <form action="#" th:action="@{/}" method="POST" name="model">
                         <div class="form-group row">
                             <div class="col-sm-7">
-                                <input type="submit" class="btn btn-secondary" value="OK"/>
+                                <input type="submit" class="btn btn-info" value="OK"/>
                             </div>
                         </div>
                     </form>
@@ -76,16 +76,16 @@
         </div>
 
         <div class="col-sm-10" th:if="${titl}=='Not added'">
-            <div class="container-fluid border border-secondary rounded" style="background-color: #dddddd">
+            <div class="container-fluid border border-info rounded" style="background-color: #dddddd">
                 <div class="container fo">
                     <br/>
-                    <div class="alert alert-warning-orange pl-5 pr-5 border border-secondary mb-3">
+                    <div class="alert alert-warning-orange pl-5 pr-5 border border-info mb-3">
                         <h1 class="col-sm-7 col-form-label lefted">User was not added</h1>
                     </div>
                     <form action="#" th:action="@{/}" method="POST" name="model">
                         <div class="form-group row">
                             <div class="col-sm-7">
-                                <input type="submit" class="btn btn-secondary" value="OK"/>
+                                <input type="submit" class="btn btn-info" value="OK"/>
                             </div>
                         </div>
                     </form>

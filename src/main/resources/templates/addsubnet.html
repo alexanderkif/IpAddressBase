@@ -18,7 +18,7 @@
 
         <div class="col-sm-10">
             <form action="/createsubnet" method="post">
-                <div class="container-fluid border border-secondary rounded" style="background-color: #dddddd">
+                <div class="container-fluid alert alert-info border border-info rounded">
                     <div class="row mt-3">
                         <div class="col col-sm-12">
                             <h2 th:text="${msg}" style="text-align: center; color: red"></h2>
@@ -33,9 +33,9 @@
                         <div class="col col-sm-10">
                             <div class="mt-2 text-center">
                                 <div>Введите адрес и маску сети</div>
-                                <input type="text" name="ipNet" th:value="${ipNet}" placeholder="192.168.1.0"
+                                <input class="rounded" type="text" name="ipNet" th:value="${ipNet}" placeholder="192.168.1.0"
                                        style="width:130px; text-align: center"/> /
-                                <input type="text" name="mask" th:value="${ma}" placeholder="24"
+                                <input class="rounded" type="text" name="mask" th:value="${ma}" placeholder="24"
                                        style="width:40px; text-align: center"/>
                             </div>
                         </div>
@@ -46,13 +46,13 @@
                         <div class="col col-sm-4">
                             <div class="mt-2">
                                 <div>Vlan</div>
-                                <input type="text" name="vlan" th:value="${vlan}" placeholder="1"/>
+                                <input class="rounded" type="text" name="vlan" th:value="${vlan}" placeholder="1"/>
                             </div>
                         </div>
                         <div class="col col-sm-6">
                             <div class="mt-2">
                                 <div>Owner</div>
-                                <input type="text" name="owner" th:value="${owner}" placeholder="owner"/>
+                                <input class="rounded" type="text" name="owner" th:value="${owner}" placeholder="owner"/>
                             </div>
                         </div>
                     </div>
@@ -62,15 +62,15 @@
                         <div class="col col-sm-4">
                             <div class="mt-2">
                                 <div>VlanName</div>
-                                <input type="text" name="vlanName" th:value="${vlanName}" placeholder="Vlan Name"/>
+                                <input class="rounded" type="text" name="vlanName" th:value="${vlanName}" placeholder="Vlan Name"/>
                             </div>
                         </div>
                         <div class="col col-sm-6">
                             <div class="mt-2">
                                 <div>Description</div>
-                                <input type="text" name="description" th:value="${description}" placeholder="Description"/>
+                                <input class="rounded" type="text" name="description" th:value="${description}" placeholder="Description"/>
                             </div>
-                            <div class="mt-3 mb-3"><input type="submit"/></div>
+                            <div class="mt-3 mb-3"><input class="btn-info rounded" type="submit"/></div>
                         </div>
                     </div>
                 </div>

@@ -14,7 +14,7 @@
 </div>
 
 
-<div th:fragment="header-top" class="row align-items-center alert badge-secondary m-0 mt-3 border border-dark">
+<div th:fragment="header-top" class="row align-items-center alert badge-info m-0 mt-3 border border-dark">
 
     <div class="col-sm-3 text-sm-right text-center">
         <a href="/"><img th:src="@{/css/fn.png}" width="90" height="80"/></a>
@@ -27,33 +27,33 @@
 
 <div th:fragment="left-menu" class="col-sm-2">
     <div class="list-group rounded">
-        <a href="/" class="list-group-item list-group-item-secondary border border-secondary">Home</a>
-        <!--<a href="/login" class="list-group-item list-group-item-secondary border border-secondary"-->
+        <a href="/" class="list-group-item list-group-item-info border border-info">Home</a>
+        <!--<a href="/login" class="list-group-item list-group-item-info border border-info"-->
         <!--th:if="${#httpServletRequest.remoteUser}==null">Login</a>-->
-        <!--<a href="/list" class="list-group-item list-group-item-secondary border border-secondary" th:if="${#httpServletRequest.remoteUser}!=null">List IP</a>-->
-        <!--<a href="/register" class="list-group-item list-group-item-secondary border border-secondary"-->
+        <!--<a href="/list" class="list-group-item list-group-item-info border border-info" th:if="${#httpServletRequest.remoteUser}!=null">List IP</a>-->
+        <!--<a href="/register" class="list-group-item list-group-item-info border border-info"-->
         <!--th:if="${#httpServletRequest.remoteUser}==null">Register</a>-->
-        <a href="/addnet" class="list-group-item list-group-item-secondary border border-secondary"
+        <a href="/addnet" class="list-group-item list-group-item-info border border-info"
            th:if="${title}=='home'">Add Net</a>
-        <a href="/addsubnet" class="list-group-item list-group-item-secondary border border-secondary"
+        <a href="/addsubnet" class="list-group-item list-group-item-info border border-info"
            th:if="${title}=='subnets'">Add SubNet</a>
         <a th:href="@{/subnets/(id=${suffix})}"
-           class="list-group-item list-group-item-secondary border border-secondary"
+           class="list-group-item list-group-item-info border border-info"
            th:if="${title}=='index'">Subnets</a>
         <a th:href="@{/editsubnet/(subnet=${net})}"
-           class="list-group-item list-group-item-secondary border border-secondary" th:if="${title}=='index'">Edit
+           class="list-group-item list-group-item-info border border-info" th:if="${title}=='index'">Edit
             subnet</a>
         <a th:href="@{/editnet/(net=${suffix})}"
-           class="list-group-item list-group-item-secondary border border-secondary" th:if="${title}=='subnets'">Edit
+           class="list-group-item list-group-item-info border border-info" th:if="${title}=='subnets'">Edit
             net</a>
-        <!--<a href="/add" class="list-group-item list-group-item-secondary border border-secondary" th:if="${#httpServletRequest.remoteUser}!=null">Add IP</a>-->
+        <!--<a href="/add" class="list-group-item list-group-item-info border border-info" th:if="${#httpServletRequest.remoteUser}!=null">Add IP</a>-->
     </div>
     <div class="list-group rounded mt-2 mb-3" th:if="${#httpServletRequest.remoteUser}!=null">
-        <a class="list-group-item list-group-item-secondary border border-secondary"
+        <a class="list-group-item list-group-item-info border border-info"
            th:text="'Sign out ('+${#httpServletRequest.remoteUser}+')'" href="/logout">
         </a>
     </div>
-    <div class="container mt-3 mb-3 border border-secondary rounded p-3"
+    <div class="container mt-3 mb-3 border border-info rounded p-3"
          th:if="${#httpServletRequest.remoteUser}==null">
         <div class="col-form-label">
             Quick login
@@ -67,14 +67,14 @@
                 <input type="password" class="form-control" id="password" name="password"
                        placeholder="Password"/>
             </div>
-            <button type="submit" class="btn btn-secondary">Submit</button>
+            <button type="submit" class="btn btn-info">Submit</button>
         </form>
     </div>
 
 </div>
 
 <div th:fragment="footer"
-     class="row align-items-center alert alert-secondary m-0 mt-3 mb-3 pl-5 p-1 border border-secondary">
+     class="row align-items-center alert alert-info m-0 mt-3 mb-3 pl-5 p-1 border border-info">
     Copyright © 2018
 
     <script src="../static/js/jquery-3.2.1.slim.min.js" th:src="@{/js/jquery-3.2.1.slim.min.js}"></script>

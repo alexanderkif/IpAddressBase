@@ -19,12 +19,12 @@
         <div class="col-sm-10">
             <form action="/index" method="post">
                 <div class="container-fluid">
-                    <div class="row rounded" style="background-color: #dddddd">
-                        <div class="col-sm-3 text-center border border-dark">Net</div>
-                        <div class="col-sm-3 text-center border border-dark">Owner</div>
-                        <div class="col-sm-6 text-center border border-dark">Description</div>
+                    <div class="row alert-info rounded">
+                        <div class="col-sm-3 text-center border border-info rounded">Net</div>
+                        <div class="col-sm-3 text-center border border-info rounded">Owner</div>
+                        <div class="col-sm-6 text-center border border-info rounded">Description</div>
                     </div>
-                    <div class="row border border-secondary rounded" th:each="net:${nets}">
+                    <div class="row border border-info rounded" th:each="net:${nets}">
                         <div class="col-sm-3 text-center">
                             <a th:href="@{/subnets/(id=${net.id})}" th:text="${net.net}">Net</a>
                         </div>
