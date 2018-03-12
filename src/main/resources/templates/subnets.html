@@ -19,13 +19,13 @@
         <div class="col-sm-10">
             <form action="/index" method="post">
                 <div class="container-fluid">
-                    <div class="row alert-info rounded">
-                        <div class="col-sm-3 text-center border border-info rounded">Subnet</div>
-                        <div class="col-sm-1 text-center border border-info rounded">Mask</div>
-                        <div class="col-sm-1 text-center border border-info rounded">Vlan</div>
-                        <div class="col-sm-2 text-center border border-info rounded">VlanName</div>
-                        <div class="col-sm-2 text-center border border-info rounded">Owner</div>
-                        <div class="col-sm-3 text-center border border-info rounded">Description</div>
+                    <div class="row rounded">
+                        <div class="col-sm-3 text-center alert-info border border-info rounded">Subnet</div>
+                        <div class="col-sm-1 text-center alert-info border border-info rounded">Mask</div>
+                        <div class="col-sm-1 text-center alert-info border border-info rounded">Vlan</div>
+                        <div class="col-sm-2 text-center alert-info border border-info rounded">VlanName</div>
+                        <div class="col-sm-2 text-center alert-info border border-info rounded">Owner</div>
+                        <div class="col-sm-3 text-center alert-info border border-info rounded">Description</div>
                     </div>
                     <div class="row border border-info rounded" th:each="subnet:${subnets}">
                         <div class="col-sm-3 text-center">
