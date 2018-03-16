@@ -9,25 +9,19 @@ import green.ip.entity.Ip;
 import green.ip.entity.Net;
 import green.ip.entity.SubNet;
 import green.ip.services.AccountRepository;
-import green.ip.services.MyUserDetailsService;
 import green.ip.services.NetRepository;
 import green.ip.services.SubNetRepository;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.web.ServerProperties;
 import org.springframework.context.annotation.Scope;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import sun.plugin.liveconnect.SecurityContextHelper;
 
 import javax.websocket.server.PathParam;
 import java.security.Principal;
-import java.security.Security;
 import java.util.*;
 
 import static com.mongodb.client.model.Filters.*;
