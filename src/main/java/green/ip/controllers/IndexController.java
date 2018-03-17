@@ -3,7 +3,6 @@ package green.ip.controllers;
 import com.mongodb.BasicDBObject;
 import com.mongodb.MongoClient;
 import com.mongodb.client.MongoCollection;
-import com.mongodb.client.MongoDatabase;
 import green.ip.entity.Account;
 import green.ip.entity.Ip;
 import green.ip.entity.Net;
@@ -14,7 +13,6 @@ import green.ip.services.SubNetRepository;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Scope;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -29,7 +27,6 @@ import static org.codehaus.groovy.runtime.InvokerHelper.asList;
 
 
 @Controller
-@Scope("session")
 public class IndexController {
 
     @Autowired
@@ -43,8 +40,9 @@ public class IndexController {
 
     private String suffix;
 
-    private MongoClient mongoClient = new MongoClient("localhost", 27017);
-    MongoDatabase mongoDatabase = mongoClient.getDatabase("ipbase");
+    @Autowired
+    MongoClient mongoClient;
+
     MongoCollection ips;
     private int docsOnPage = 50;
 
@@ -59,7 +57,8 @@ public class IndexController {
     public String net(Model model,
                       @PathParam("id") String id) {
         this.suffix = netRepository.getById(id).getId();
-        ips = mongoDatabase.getCollection("ips"+this.suffix);
+        ips = mongoClient.getDatabase("fish").getCollection("ips"+this.suffix);
+//        ips = mongoDatabase.getCollection("ips"+this.suffix);
         model.addAttribute("suffix", suffix);
         model.addAttribute("subnets", subNetRepository.getByNet(suffix));
         model.addAttribute("title", "subnets");
