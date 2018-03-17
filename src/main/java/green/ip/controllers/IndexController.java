@@ -10,6 +10,7 @@ import green.ip.entity.SubNet;
 import green.ip.services.AccountRepository;
 import green.ip.services.NetRepository;
 import green.ip.services.SubNetRepository;
+import org.bson.BSON;
 import org.bson.Document;
 import org.bson.conversions.Bson;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +59,6 @@ public class IndexController {
                       @PathParam("id") String id) {
         this.suffix = netRepository.getById(id).getId();
         ips = mongoClient.getDatabase("fish").getCollection("ips"+this.suffix);
-//        ips = mongoDatabase.getCollection("ips"+this.suffix);
         model.addAttribute("suffix", suffix);
         model.addAttribute("subnets", subNetRepository.getByNet(suffix));
         model.addAttribute("title", "subnets");
@@ -247,6 +247,7 @@ public class IndexController {
                 .build();
         subNetRepository.save(subNet);
 
+        List<Document> bsons = new ArrayList();
         for (int i = 1; i < ipWML; i++) {
             iBinary = String.format(strFormat, Integer.toBinaryString(i)).replace(' ', '0');
             iBinaryFull = ipBinaryFull.substring(0, Integer.parseInt(mask)) + iBinary;
@@ -262,11 +263,12 @@ public class IndexController {
                     ))
                     .build();
             if (ips.find(new Document("_id", ip.getIp())).first() == null) {
-                ips.insertOne(toBson(ip));
+                bsons.add(toBson(ip));
             } else {
                 ipList.add(ip);
             }
         }
+        if (bsons.size()>0) ips.insertMany(bsons);
         model.addAttribute("title", "create");
         model.addAttribute("ipList", ipList);
         return "create";
