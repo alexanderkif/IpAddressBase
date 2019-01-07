@@ -1,5 +1,10 @@
-# IpAddressBase
-Look at http://ec2-18-217-126-219.us-east-2.compute.amazonaws.com/
+## IpAddressBase
+Application for accounting of ip-addresses in the organization. Creates a range of IP addresses. Keeps records of connected devices. Saves in logs who, when, what has changed.
+
+Look at https://ipaddressbase.herokuapp.com/
+
+#####Use `2@2` and `2` as login and password.
 
 Used SpringBoot, Maven, Secure, BCrypt, Mongo DB, MongoRepository, GridFS, Lombok, Thymeleaf, Bootstrap-4.
-Use 2@2 and 2 as login and password.
+
+In developing...
