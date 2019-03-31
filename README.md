@@ -3,8 +3,8 @@ Application for accounting of ip-addresses in the organization. Creates a range 
 
 Look at https://ipaddressbase.herokuapp.com/
 
-##### Use `2@2` and `2` as login and password.
+##### Use `2@2.qq` and `222` as test login and password or register.
 
-Used SpringBoot, Maven, Secure, BCrypt, Mongo DB, MongoRepository, GridFS, Lombok, Thymeleaf, Bootstrap-4.
+Used SpringBoot, Maven, Secure, BCrypt, Mongo DB, MongoRepository, GridFS, Lombok, Thymeleaf, Bootstrap.
 
 In developing...
